@@ -47,7 +47,7 @@ module.exports = (app, options) => {
       }
     })
   
-    app.get('/getAllSpecialist', auth, async (req, res) => {
+    app.get('/getAllSpecialist',  async (req, res) => {
       await options.allSpecialist()
         .then(result => {
           res.status(200).send(result);

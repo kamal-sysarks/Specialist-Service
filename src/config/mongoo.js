@@ -4,8 +4,8 @@ const connect = (options, mediator) => {
     console.log("Inside mongoose");
     // mediator.once('boot-ready', () => {
         
-    const uri = 'mongodb://127.0.0.1:27017/' + options.db;
-    // const uri = 'mongodb+srv://sysarks02:admin123@sysarks01-lyts7.mongodb.net/test?retryWrites=true&w=majority';
+    // const uri = 'mongodb://127.0.0.1:27017/' + options.db;
+    const uri = 'mongodb+srv://sysarks02:admin123@sysarks01-lyts7.mongodb.net/test?retryWrites=true&w=majority';
     
     mongoose.connect(uri, options.dboptions);
     
