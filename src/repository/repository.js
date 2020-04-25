@@ -11,7 +11,7 @@ const repository = (db) => {
       return {savedUser, token};
     } catch (error) {
       console.log(error);
-      return error;
+      throw new Error(error);
     }
   }
 
@@ -22,7 +22,7 @@ const repository = (db) => {
       return {user, token};
     }catch(error){
       console.log("error:" + error);
-      return error;
+      throw new Error(error);
     }
   }
 
@@ -32,7 +32,7 @@ const repository = (db) => {
       return specialists;  
     } catch (error) {
       console.log("error:" + error);
-      return error;
+      throw new Error(error);
     }
   }
 

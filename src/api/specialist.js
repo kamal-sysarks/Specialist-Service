@@ -5,24 +5,21 @@ const Specialist = require("../models/users");
 
 module.exports = (app, options) => {
     app.post('/registerSpecialist', async (req, res) => {
-      await options.specialistRegister(req.body)
-        .then(result => {
-          res.status(200).send(result);
-        }).catch(err => {
-          res.send(err);
-        });
+      try {
+        const result = await options.specialistRegister(req.body)
+        res.status(201).send(result);
+      } catch (error) {
+        res.status(500).send({error: error.message});
+      }
     })
 
-    app.post('/loginSpecialist', async (req, res, next) => {
-      await options.specialistLogin(req.body)
-        .then(result => {
-          if(!result){
-            return res.status(404).send("User doesn't exists");
-          }
-          res.status(200).send(result);
-        }).catch(err => {
-          res.status(500).send(err);
-        }).catch(next);
+    app.post('/loginSpecialist', async (req, res) => {
+      try {
+        const result = await options.specialistLogin(req.body)
+        res.status(200).send(result);
+      } catch (error) {
+        res.status(404).send({error: error.message});
+      }
     })
 
     app.post('/logoutSpecialist', auth, async (req, res) => {
@@ -31,7 +28,7 @@ module.exports = (app, options) => {
             return token.token !== req.token;
         });
         await req.user.save();
-        res.send('User logged out');
+        res.status(200).send('User logged out');
       } catch (error) {
         res.status(500).send('Something Went Wrong'+ error)
       }
@@ -48,12 +45,12 @@ module.exports = (app, options) => {
     })
   
     app.get('/getAllSpecialist',  async (req, res) => {
-      await options.allSpecialist()
-        .then(result => {
-          res.status(200).send(result);
-        }).catch(err => {
-          res.send(err);
-        })
+      try {
+        const result = await options.allSpecialist()
+        res.status(200).send(result);
+      } catch (error) {
+        res.status(404).send({error: error.message});
+      }
     })
 
     const upload = multer({
@@ -73,7 +70,7 @@ module.exports = (app, options) => {
       
       req.user.avatar = buffer;
         await req.user.save();
-        res.send();
+        res.status(201).send("Profile Pic Uploaded.");
      },(error, req, res, next) =>{
         res.status(400).send({error: error.message});
      })
