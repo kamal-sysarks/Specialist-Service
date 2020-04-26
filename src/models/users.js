@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema({
         trim: true,
     },
     medlicensenum: {
-        type: Number,
+        type: String,
         required: true,
         trim: true,
     },
