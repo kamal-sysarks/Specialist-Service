@@ -1,5 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const morgan = require('morgan');
+const winston = require('winston');
+require('winston-mongodb');
 const api = require('../api/specialist');
 
 const start = (options) => {
@@ -15,12 +18,41 @@ const start = (options) => {
       const app = express();
       app.use(cors());
       app.use(express.json());
-    //   app.use(morgan('dev'))
+
+      try {
+        const logger = new winston.createLogger({  
+          transports: [
+            new winston.transports.MongoDB({
+              level: 'info',
+              db: 'mongodb+srv://sysarks02:admin123@sysarks01-lyts7.mongodb.net/test?retryWrites=true&w=majority',
+              options: {useUnifiedTopology: true},
+              collection: 'specialist_log',
+              prettyPrint: true,
+              format: winston.format.combine(
+                winston.format.timestamp({
+                  format: 'YYYY-MM-DD HH:mm:ss'
+                }),
+                winston.format.json()
+              ),
+            })
+          ]
+        });
+        logger.stream = { 
+          write: function(message, encoding){ 
+            console.log(message);
+            logger.info(message); 
+          } 
+        };
+        app.use(morgan('dev',{ "stream": logger.stream }));  
+      } catch (error) {
+        console.log(error);
+      }
+      
     //   app.use(helmet())
-      // app.use((err, req, res, next) => {
-      //   reject(new Error('Something went wrong!, err:' + err))
-      //   res.status(500).send('Something went wrong!')
-      // })
+      app.use((err, req, res, next) => {
+        reject(new Error('Something went wrong!, err:' + err))
+        res.status(500).send('Something went wrong!')
+      })
 
       api(app, options.repo);
   
