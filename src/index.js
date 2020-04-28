@@ -1,9 +1,12 @@
 'use strict'
+require('dotenv').config();
 const {EventEmitter} = require('events');
 const server = require('./server/server');
 const repository = require('./repository/repository');
 const config = require('./config/');
 const mediator = new EventEmitter();
+
+const logger = require('./config/logger').logger;
 
 console.log('--- Specialist Service ---')
 console.log('Connecting to Specialist repository...')
@@ -20,7 +23,8 @@ mediator.on('db.ready', (db) => {
   let rep;
   repository.connect(db)
     .then(repo => {
-      console.log('Connected. Starting Server')
+      console.log('Connected. Starting Server');
+      logger.info("DB Connected to Repository. Starting Server.")
       rep = repo;
       return server.start({
         port: config.serverSettings.port,
@@ -28,16 +32,19 @@ mediator.on('db.ready', (db) => {
       })
     })
     .then(app => {
-      console.log(`Server started succesfully, running on port: ${config.serverSettings.port}.`)
+      console.log(`Server started successfully, running on port: ${config.serverSettings.port}.`);
+      logger.info(`Server started successfully, running on port: ${config.serverSettings.port}.`);
       app.on('close', () => {
-        rep.disconnect()
+        rep.disconnect();
+        logger.info(`Disconnect Server with Repository.`);
       })
+    })
+    .catch(error => {
+      console.log(error);
+      logger.error(`Error: ${error.message}`)
     })
 })
 
-mediator.on('db.error', (err) => {
-  console.error(err)
-});
 
 config.db.connect(config.dbSettings,mediator);
 

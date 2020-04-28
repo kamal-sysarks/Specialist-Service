@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const logger = require('./../config/logger').logger;
 
 var uniqueValidator = require('mongoose-unique-validator');
 
@@ -83,26 +84,36 @@ userSchema.methods.toJSON =  function() {
 }
 
 userSchema.methods.generateAuthToken = async function(){
-    const user = this;
-    const token = jwt.sign({_id: user._id.toString()}, 'flutterPOC');
-    user.tokens = user.tokens.concat({token});
-    await user.save();
-    return token;
+    try {
+        const user = this;
+        const token = jwt.sign({_id: user._id.toString()}, 'flutterPOC');
+        user.tokens = user.tokens.concat({token});
+        await user.save();
+        return token;
+    } catch (error) {
+        console.log(error);
+        logger.error("Error: In Generating JWT Token.");
+        throw new Error("Error: In Generating JWT Token.");
+    }
+    
 }
 
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({email});
 
     if(!user){
+        logger.info("User Email ID Doesn't Exist");
         throw new Error('Unable to login');
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     
     if(!isMatch){
+        logger.info("Password Doesn't Match.");
         throw new Error('Unable to login');
     }
 
+    logger.info('User Credentials Validated.')
     return user;
 }
 
@@ -115,7 +126,6 @@ userSchema.pre('save', async function (next){
     if(user.isModified('password')){
         user.password = await bcrypt.hash(user.password, 8);
     }
-    console.log('Just Before Saving');
 
     next();
 });

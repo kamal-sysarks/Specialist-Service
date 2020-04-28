@@ -4,37 +4,46 @@ const sharp = require('sharp');
 const Specialist = require("../models/users");
 
 module.exports = (app, options) => {
-    app.post('/registerSpecialist', async (req, res) => {
+    app.post('/signUpSpecialist', async (req, res) => {
       try {
-        const result = await options.specialistRegister(req.body)
+        const result = await options.signUpSpecialist(req.body)
         res.status(201).send(result);
       } catch (error) {
         res.status(500).send({error: error.message});
       }
     })
 
-    app.post('/loginSpecialist', async (req, res) => {
+    app.post('/signInSpecialist', async (req, res) => {
       try {
-        const result = await options.specialistLogin(req.body)
+        const result = await options.signInSpecialist(req.body)
         res.status(200).send(result);
       } catch (error) {
         res.status(404).send({error: error.message});
       }
     })
 
-    app.post('/logoutSpecialist', auth, async (req, res) => {
-      try { 
-        req.user.tokens = req.user.tokens.filter((token) => {
-            return token.token !== req.token;
-        });
-        await req.user.save();
-        res.status(200).send('User logged out');
-      } catch (error) {
-        res.status(500).send('Something Went Wrong'+ error)
-      }
+    app.get('/signOutSpecialist', auth, async (req, res) => {
+      // try { 
+      //     const user = await options.signOutSpecialist(req);
+      //     if(user === ''){
+      //       res.status(500).send('Something Went Wrong');
+      //     }
+      //     res.status(200).send(user);
+      //   } catch (error) {
+      //     res.status(500).send('Error: '+ error)
+      //   }
+        try {
+          const user = await options.signOutPatient(req);
+          if(user === ''){
+            res.status(500).send('Something Went Wrong');
+          }
+          res.status(200).send(user);
+        } catch (error) {
+          res.status(500).send('Error: '+ error)
+        }
     })
 
-    app.post('/logoutSpecialistAll', auth, async (req, res) => {
+    app.post('/signOutSpecialistAll', auth, async (req, res) => {
       try { 
         req.user.tokens = [];
         await req.user.save();
@@ -44,9 +53,9 @@ module.exports = (app, options) => {
       }
     })
   
-    app.get('/getAllSpecialist',  async (req, res) => {
+    app.get('/getSpecialistsList',  async (req, res) => {
       try {
-        const result = await options.allSpecialist()
+        const result = await options.getSpecialistsList()
         res.status(200).send(result);
       } catch (error) {
         res.status(404).send({error: error.message});
@@ -65,7 +74,7 @@ module.exports = (app, options) => {
       }      
     })
 
-    app.post('/specialist/profile', auth, upload.single('avatar'), async (req, res) => {
+    app.post('/specialist/avatar', auth, upload.single('avatar'), async (req, res) => {
         const buffer = await sharp(req.file.buffer).resize({width: 320, height:320}).png().toBuffer();   
       
       req.user.avatar = buffer;
