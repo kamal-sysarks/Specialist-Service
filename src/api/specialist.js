@@ -23,17 +23,8 @@ module.exports = (app, options) => {
     })
 
     app.get('/signOutSpecialist', auth, async (req, res) => {
-      // try { 
-      //     const user = await options.signOutSpecialist(req);
-      //     if(user === ''){
-      //       res.status(500).send('Something Went Wrong');
-      //     }
-      //     res.status(200).send(user);
-      //   } catch (error) {
-      //     res.status(500).send('Error: '+ error)
-      //   }
         try {
-          const user = await options.signOutPatient(req);
+          const user = await options.signOutSpecialist(req);
           if(user === ''){
             res.status(500).send('Something Went Wrong');
           }

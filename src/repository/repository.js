@@ -31,7 +31,7 @@ const repository = (db) => {
     }
   }
 
-  const signOutPatient = async (specialist) => {
+  const signOutSpecialist = async (specialist) => {
     try {
         const tokensCount =  specialist.user.tokens.length;
         specialist.user.tokens = specialist.user.tokens.filter((token) => {
@@ -51,11 +51,11 @@ const repository = (db) => {
   const getSpecialistsList = async () => {
     try {
       const specialists = await Specialist.find({});
-      logger.info(`Getting All Specialists List`);
+      logger.info(`Getting Specialists List`);
       return specialists;  
     } catch (error) {
       console.log("error:" + error);
-      logger.error(`Error: Getting All Specialists List ${error}`);
+      logger.error(`Error: Getting Specialists List ${error}`);
       throw new Error(error);
     }
   }
@@ -68,7 +68,7 @@ const repository = (db) => {
     signUpSpecialist,
     signInSpecialist,
     getSpecialistsList,
-    signOutPatient,
+    signOutSpecialist,
     disconnect
   })
  // console.log(obj.patientRegister);

@@ -3,9 +3,7 @@ const logger = require('./logger').logger;
 
 const connect = (options, mediator)  => {
     console.log("Inside mongoose");
-    // mediator.once('boot-ready', () => {
-        
-    // const uri = 'mongodb://127.0.0.1:27017/' + options.db;
+   
     try {
         mongoose.connect(options.db, options.dbOptions);
     
