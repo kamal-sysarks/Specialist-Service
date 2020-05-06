@@ -1,6 +1,6 @@
-require('dotenv').config();
-const app = require('./../src/server/server');
-const {serverSettings} = require('./../src/db/config');
+ const app = require('./../src/server/server');
+ const {serverSettings, dbSettings} = require('./../src/db/config');
 
 const port = serverSettings.port;
+console.log(port);
 app.listen(port, () => console.log(`Server is up and running on port ${port}`));
