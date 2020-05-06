@@ -1,17 +1,16 @@
 const dbSettings = {
     db: process.env.DB,
-    dbOptions: {
+    options: {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
         useFindAndModify: false,
-        autoIndex: false,
+        autoIndex: false, 
     }
 }
 
 const serverSettings = {
     port: process.env.PORT || 3000
-  }
-  
-module.exports = Object.assign({}, { dbSettings, serverSettings })
-  
+}
+
+module.exports = Object.assign({}, { dbSettings, serverSettings });

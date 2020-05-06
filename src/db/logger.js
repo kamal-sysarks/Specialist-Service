@@ -1,14 +1,18 @@
 const winston = require('winston');
 require('winston-mongodb');
+const {dbSettings} = require('../db/config');
+
 
 const options = {
-
+  
   database: {
-    db: process.env.DB,
+    db: dbSettings.db,
     options: {useUnifiedTopology: true},
     level : 'info',
     collection: 'specialist_log',
     prettyPrint: true,
+    handleExceptions: true,
+    humanReadableUnhandledException: true,
     datePattern: 'YYYY-MM-DD',
     format: winston.format.combine(
       winston.format.timestamp({

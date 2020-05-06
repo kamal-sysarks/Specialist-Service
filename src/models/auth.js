@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('./users');
-const logger = require('./../config/logger').logger;
+const logger = require('../db/logger').logger;
 
 const  auth = async (req, res, next) => {
     try {
@@ -9,12 +9,9 @@ const  auth = async (req, res, next) => {
         const user = await User.findOne({_id: decode._id, 'tokens.token': token});
 
         if(!user){
-            
             throw new Error();
         }
-
         req.token = token;
-        console.log(req.token);
         req.user = user;
         logger.info("User Authenticated");
         next(); 

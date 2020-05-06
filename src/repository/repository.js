@@ -1,8 +1,6 @@
-'use strict'
 const Specialist = require("../models/users");
-const logger = require('./../config/logger').logger;
+const logger = require('../db/logger').logger;
 
-const repository = (db) => {
   
   const signUpSpecialist = async (specialist) => {
     try {
@@ -60,30 +58,11 @@ const repository = (db) => {
     }
   }
 
-  const disconnect = () => {
-    db.close()
-  }
-
   const obj = Object.create({
     signUpSpecialist,
     signInSpecialist,
     getSpecialistsList,
-    signOutSpecialist,
-    disconnect
+    signOutSpecialist
   })
- // console.log(obj.patientRegister);
-  return obj;
-}
 
-const connect = (connection) => {
-  return new Promise((resolve, reject) => {
-    if (!connection) {
-      reject(new Error('connection db not supplied!'))
-    }
-   // console.log(connection);
-    resolve(repository(connection));
-    
-  })
-}
-
-module.exports = Object.assign({}, {connect})
+module.exports =  obj;
