@@ -2,5 +2,4 @@
  const {serverSettings, dbSettings} = require('./../src/db/config');
 
 const port = serverSettings.port;
-console.log(port);
 app.listen(port, () => console.log(`Server is up and running on port ${port}`));
