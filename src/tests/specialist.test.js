@@ -1,28 +1,9 @@
 const request = require('supertest');
 const app = require('./../server/server');
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const User = require('./../models/users');
 
-const userOneId = new mongoose.Types.ObjectId();
-const userOne = {
-    _id: userOneId,
-    "name": "Dr Basavaraj",
-    "email": "bassu@g.com",
-    "password": "bassu12345",
-    "phone": 8989899898,
-    "specialization":"Cardio",
-    "highestDegree":"MD",
-    "medlicensenum":"123446",
-    tokens: [{
-        token: jwt.sign({_id: userOneId}, process.env.JWT_SECRET)
-    }]
-}
+const { specialistOne, setUpDB} = require('./mock_db');
 
-beforeEach(async () => {
-    await User.deleteMany();
-    await new User(userOne).save();
-})
+beforeEach(setUpDB)
 
 test("Should signup a new user", async () => {
     // console.log(server);
@@ -39,8 +20,8 @@ test("Should signup a new user", async () => {
 
 test("Should login a user", async () => {
     await request(app).post('/signInSpecialist').send({
-        "email": userOne.email,
-        "password": userOne.password
+        "email": specialistOne.email,
+        "password": specialistOne.password
     }).expect(200)
 })
 
@@ -57,7 +38,7 @@ test("Should get Specialists List from DB", async () => {
 
 test("Should logout a user", async () => {
     await request(app).get('/signOutSpecialist')
-        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+        .set('Authorization', `Bearer ${specialistOne.tokens[0].token}`)
         .send()
         .expect(200)
 
